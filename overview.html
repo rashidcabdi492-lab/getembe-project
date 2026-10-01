@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StockFlow Admin - Overview</title>
+    <style>
+        /* CSS Reset & Base Styles */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f1f5f9;
+            color: #1e293b;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Navigation */
+        aside {
+            width: 260px;
+            background-color: #0f172a;
+            color: #f8fafc;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            box-shadow: 4px 0 10px rgba(0, 0, 0, 0.05);
+            z-index: 10;
+        }
+
+        .sidebar-brand {
+            padding: 24px 20px;
+            font-size: 20px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 20px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 1;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .sidebar-menu a:hover, 
+        .sidebar-menu a.active {
+            background-color: rgba(255, 255, 255, 0.08);
+            color: white;
+        }
+
+        .sidebar-menu a.active {
+            background-color: #4f46e5;
+            color: white;
+        }
+
+        .sidebar-footer {
+            padding: 20px;
+            font-size: 12px;
+            color: #64748b;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        /* Main Content Wrapper */
+        .main-wrapper {
+            margin-left: 260px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top Bar */
+        header {
+            background: white;
+            padding: 20px 40px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h2 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .admin-badge {
+            background: #e0e7ff;
+            color: #4f46e5;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        /* Dynamic Content Area */
+        .content-area {
+            padding: 40px;
+            flex: 1;
+        }
+
+        .welcome-card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid #e2e8f0;
+        }
+
+        .welcome-card h3 {
+            font-size: 22px;
+            margin-bottom: 10px;
+            color: #1e293b;
+        }
+
+        .welcome-card p {
+            color: #64748b;
+            line-height: 1.5;
+        }
+
+        /* Responsive Breakpoint */
+        @media (max-width: 768px) {
+            aside {
+                width: 70px;
+            }
+            aside .sidebar-brand span,
+            aside .sidebar-menu span,
+            aside .sidebar-footer {
+                display: none;
+            }
+            .main-wrapper {
+                margin-left: 70px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar Navigation -->
+    <aside>
+        <div class="sidebar-brand">
+            <span>📦</span>
+            <span>StockFlow</span>
+        </div>
+
+        <ul class="sidebar-menu">
+            <li>
+                <a href="overview.html" class="active">
+                    <span>📊</span> Overview
+                </a>
+            </li>
+            <li>
+                <a href="receptionist.html">
+                    <span>📋</span> Receptionist Panel
+                </a>
+            </li>
+            <li>
+                <a href="administrator.html">
+                    <span>🧾</span> Admin Receipts
+                </a>
+            </li>
+        </ul>
+
+        <div class="sidebar-footer">
+            v1.2.0.2.6 • Admin Console
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="main-wrapper">
+        <header>
+            <h2>Overview Dashboard</h2>
+            <div class="admin-badge">Administrator Logged In</div>
+        </header>
+
+        <main class="content-area">
+            <div class="welcome-card">
+                <h3>Welcome back, Admin!</h3>
+                <p>Use the sidebar menu on the left to navigate seamlessly across your inventory management pages, view system receipts, check current version specifications, or switch panels.</p>
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>

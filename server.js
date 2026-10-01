@@ -154,7 +154,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/overview', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
+    res.sendFile(path.join(__dirname, 'overview.html'));
 });
 
 // Local development server runner

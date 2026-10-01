@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StockFlow - Receptionist & Orders Portal</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f1f5f9;
+            color: #1e293b;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .top-header {
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+            color: white;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-title h1 {
+            font-size: 24px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-title p {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-top: 4px;
+        }
+
+        .btn-refresh {
+            background: white;
+            color: #059669;
+            border: none;
+            padding: 8px 16px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        /* Top Grid: Admin Post view & Customer Orders Side by Side */
+        .top-grid-container {
+            max-width: 1300px;
+            margin: 30px auto 10px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            width: 100%;
+        }
+
+        /* Bottom Grid: 2x2 Menu and Rooms Layout */
+        .bottom-grid-container {
+            max-width: 1300px;
+            margin: 10px auto 30px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            width: 100%;
+        }
+
+        @media (max-width: 900px) {
+            .top-grid-container, .bottom-grid-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            height: fit-content;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-subtitle {
+            font-size: 13px;
+            color: #64748b;
+            margin-bottom: 16px;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 12px;
+        }
+
+        .list-container {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 320px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .item-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .item-info h4 {
+            font-size: 15px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 4px;
+        }
+
+        .item-meta {
+            font-size: 13px;
+            color: #64748b;
+        }
+
+        .status-badge {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+
+        .status-available { background: #d1fae5; color: #065f46; }
+        .status-occupied { background: #fee2e2; color: #991b1b; }
+        .status-pending { background: #fef3c7; color: #d97706; }
+        .status-completed { background: #d1fae5; color: #065f46; }
+
+        .btn-action {
+            background: #fef3c7;
+            color: #d97706;
+            border: none;
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .btn-complete { background: #d1fae5; color: #065f46; }
+
+        .empty-state {
+            text-align: center;
+            color: #94a3b8;
+            padding: 25px 0;
+            font-style: italic;
+            font-size: 14px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 13px;
+            color: #64748b;
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="top-header">
+        <div class="header-title">
+            <h1>🔔 Receptionist & Orders Portal</h1>
+            <p>Live order monitoring, menu catalogs, and room status tracking</p>
+        </div>
+        <button class="btn-refresh" onclick="location.reload()">🔄 Refresh Portal</button>
+    </header>
+
+    <!-- Top Section: Side-by-Side Admin Stock Overview & Live Customer Orders -->
+    <div class="top-grid-container">
+        <!-- Admin Posted Stock View -->
+        <div class="card">
+            <div class="card-title">📦 Admin Posted Stocks</div>
+            <div class="card-subtitle" id="stock-count">Showing 0 item(s)</div>
+            <ul id="admin-posted-list" class="list-container">
+                <li class="empty-state">No products registered by admin.</li>
+            </ul>
+        </div>
+
+        <!-- Live Customer Orders Section -->
+        <div class="card" style="border: 2px solid #10b981;">
+            <div class="card-title">🛍️ Live Customer Orders <span id="alert-indicator" style="display:none; font-size:12px; background:#ef4444; color:white; padding:2px 8px; border-radius:4px;">NEW ORDER!</span></div>
+            <div class="card-subtitle" id="order-count">Showing 0 active order(s)</div>
+            <ul id="order-list" class="list-container">
+                <li class="empty-state">No customer orders received yet.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Bottom Section: 2x2 Layout for Menus & Rooms Available -->
+    <div class="bottom-grid-container">
+        <!-- 1. Food Catalog -->
+        <div class="card">
+            <div class="card-title">🍽 Food Menu</div>
+            <div class="card-subtitle" id="food-count">Showing 0 item(s)</div>
+            <ul id="food-list" class="list-container">
+                <li class="empty-state">No food items available.</li>
+            </ul>
+        </div>
+
+        <!-- 2. Beverages & Liquor -->
+        <div class="card">
+            <div class="card-title">🍷 Beverages & Liquor</div>
+            <div class="card-subtitle" id="liquor-count">Showing 0 item(s)</div>
+            <ul id="liquor-list" class="list-container">
+                <li class="empty-state">No liquor items available.</li>
+            </ul>
+        </div>
+
+        <!-- 3. Soft Drinks -->
+        <div class="card">
+            <div class="card-title">🥤 Soft Drinks</div>
+            <div class="card-subtitle" id="drink-count">Showing 0 item(s)</div>
+            <ul id="drink-list" class="list-container">
+                <li class="empty-state">No soft drinks available.</li>
+            </ul>
+        </div>
+
+        <!-- 4. Rooms Available -->
+        <div class="card">
+            <div class="card-title">🏨 Rooms Available</div>
+            <div class="card-subtitle" id="room-count">Showing 0 room(s)</div>
+            <ul id="room-list" class="list-container">
+                <li class="empty-state">No rooms registered yet.</li>
+            </ul>
+        </div>
+    </div>
+
+    <footer>
+        Better Service . Better Pay . Elegance
+    </footer>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        let rooms = [];
+        let orders = [];
+        let products = []; // Can be fetched or kept empty if managed elsewhere
+
+        const adminPostedList = document.getElementById("admin-posted-list");
+        const stockCount = document.getElementById("stock-count");
+        const orderList = document.getElementById("order-list");
+        const orderCount = document.getElementById("order-count");
+        const alertIndicator = document.getElementById("alert-indicator");
+
+        const foodList = document.getElementById("food-list");
+        const foodCount = document.getElementById("food-count");
+        const liquorList = document.getElementById("liquor-list");
+        const liquorCount = document.getElementById("liquor-count");
+        const drinkList = document.getElementById("drink-list");
+        const drinkCount = document.getElementById("drink-count");
+        const roomList = document.getElementById("room-list");
+        const roomCount = document.getElementById("room-count");
+
+        let lastOrderCount = 0;
+
+        function resolveCategory(item) {
+            const name = (item.product || item.name || "").toLowerCase();
+            if (name.includes('beer') || name.includes('wine') || name.includes('whiskey') || name.includes('vodka') || name.includes('gin') || name.includes('spirit') || name.includes('tusker') || name.includes('guinness')) {
+                return "Liquor";
+            } else if (name.includes('soda') || name.includes('cola') || name.includes('juice') || name.includes('water') || name.includes('fanta') || name.includes('sprite') || name.includes('coke') || name.includes('pepsi')) {
+                return "Soft Drinks";
+            } else {
+                return "Food";
+            }
+        }
+
+        async function fetchData() {
+            try {
+                const roomRes = await fetch('/api/rooms');
+                rooms = await roomRes.json();
+
+                const orderRes = await fetch('/api/orders');
+                orders = await orderRes.json();
+
+                renderAll();
+            } catch (err) {
+                console.error("Error fetching data from server:", err);
+            }
+        }
+
+        function renderAll() {
+            // Rooms Available
+            roomList.innerHTML = "";
+            roomCount.textContent = `Showing ${rooms.length} room(s)`;
+            if (rooms.length === 0) {
+                roomList.innerHTML = `<li class="empty-state">No rooms registered yet.</li>`;
+            } else {
+                rooms.forEach(room => {
+                    const isAvailable = room.status === "Available";
+                    const li = document.createElement("li");
+                    li.className = "item-card";
+                    li.innerHTML = `
+                        <div class="item-info">
+                            <h4>${room.name || 'Room'} <span class="status-badge ${isAvailable ? 'status-available' : 'status-occupied'}">${room.status}</span></h4>
+                            <div class="item-meta">Room No: <strong>${room.number}</strong></div>
+                        </div>
+                        <button class="btn-action" onclick="toggleRoomStatus(${room.id}, '${room.status}')">${isAvailable ? 'Mark Occupied' : 'Mark Available'}</button>
+                    `;
+                    roomList.appendChild(li);
+                });
+            }
+
+            // Customer Orders
+            orderList.innerHTML = "";
+            orderCount.textContent = `Showing ${orders.length} active order(s)`;
+            if (orders.length === 0) {
+                orderList.innerHTML = `<li class="empty-state">No customer orders received yet.</li>`;
+            } else {
+                if (orders.length > lastOrderCount && lastOrderCount !== 0) {
+                    alertIndicator.style.display = "inline-block";
+                    alert("⚠️ ALERT: New customer order received!");
+                }
+                orders.forEach(order => {
+                    const isCompleted = order.status === "Completed";
+                    const itemsSummary = order.items ? order.items.map(i => `${i.product || i.name} (x${i.qty})`).join(", ") : "Standard Request";
+                    const li = document.createElement("li");
+                    li.className = "item-card";
+                    li.innerHTML = `
+                        <div class="item-info">
+                            <h4>Order #${order.id} <span class="status-badge ${isCompleted ? 'status-completed' : 'status-pending'}">${order.status || 'Pending'}</span></h4>
+                            <div class="item-meta">Items: <strong>${itemsSummary}</strong></div>
+                            <div class="item-meta">Total: <strong>KSh ${Number(order.total || 0).toLocaleString()}</strong></div>
+                        </div>
+                        <div style="display:flex; gap:6px;">
+                            ${!isCompleted ? `<button class="btn-action btn-complete" onclick="completeOrder(${order.id})">Complete</button>` : ''}
+                            <button class="btn-action" style="background:#fee2e2; color:#991b1b;" onclick="removeOrder(${order.id})">Dismiss</button>
+                        </div>
+                    `;
+                    orderList.appendChild(li);
+                });
+            }
+            lastOrderCount = orders.length;
+        }
+
+        window.toggleRoomStatus = async function(id, currentStatus) {
+            const newStatus = currentStatus === "Available" ? "Occupied" : "Available";
+            await fetch(`/api/rooms/${id}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status: newStatus })
+            });
+            fetchData();
+        };
+
+        window.completeOrder = async function(id) {
+            await fetch(`/api/orders/${id}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status: 'Completed' })
+            });
+            fetchData();
+        };
+
+        window.removeOrder = async function(id) {
+            await fetch(`/api/orders/${id}`, {
+                method: 'DELETE'
+            });
+            fetchData();
+        };
+
+        // Poll server periodically for live orders & room updates
+        setInterval(fetchData, 2000);
+
+        fetchData();
+    });
+</script>
+</body>
+</html>

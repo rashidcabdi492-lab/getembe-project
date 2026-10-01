@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Menu - Customer Portal</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f8fafc;
+            color: #1e293b;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .top-header {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: white;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-title h1 {
+            font-size: 24px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-title p {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-top: 4px;
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+            width: 100%;
+            flex: 1;
+        }
+
+        @media (max-width: 900px) {
+            .main-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            height: fit-content;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-subtitle {
+            font-size: 13px;
+            color: #64748b;
+            margin-bottom: 16px;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 10px;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        @media (max-width: 600px) {
+            .menu-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .menu-category-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .category-heading-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #cbd5e1;
+            padding-bottom: 6px;
+            margin-bottom: 10px;
+            gap: 8px;
+        }
+
+        .category-heading {
+            font-size: 15px;
+            font-weight: 700;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+
+        .section-search {
+            font-size: 11px;
+            padding: 4px 8px;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            outline: none;
+            width: 110px;
+            transition: width 0.2s;
+        }
+        .section-search:focus {
+            width: 140px;
+            border-color: #2563eb;
+        }
+
+        .product-option-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 220px;
+            overflow-y: auto;
+        }
+
+        .product-option-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            background: white;
+            padding: 8px 10px;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .product-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .qty-controls {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-left: 8px;
+        }
+
+        .qty-btn {
+            background: #e2e8f0;
+            border: none;
+            width: 20px;
+            height: 20px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .qty-btn:hover { background: #cbd5e1; }
+
+        .room-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            list-style: none;
+            max-height: 220px;
+            overflow-y: auto;
+        }
+
+        .room-badge-item {
+            background: white;
+            border: 1px solid #e2e8f0;
+            padding: 8px 10px;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+        }
+
+        .status-dot {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        .dot-available { background: #d1fae5; color: #065f46; }
+        .dot-occupied { background: #fee2e2; color: #991b1b; }
+
+        .cart-summary-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 180px;
+            overflow-y: auto;
+            margin-bottom: 14px;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            background: #f8fafc;
+            padding: 8px 10px;
+            border-radius: 6px;
+        }
+
+        .cart-total-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 10px;
+        }
+
+        .btn-order {
+            width: 100%;
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-order:hover { background: #1d4ed8; }
+
+        .empty-text {
+            color: #94a3b8;
+            font-style: italic;
+            font-size: 12px;
+            text-align: center;
+            padding: 10px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 13px;
+            color: #64748b;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="top-header">
+        <div class="header-title">
+            <h1>📖 Digital Menu & Room Availability</h1>
+            <p>Browse available products and select rooms for your stay</p>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <!-- Left Column: Menu Categories & Rooms -->
+        <div style="display: flex; flex-direction: column; gap: 24px;">
+            <div class="menu-grid">
+                <!-- 1. Food Catalog -->
+                <div class="menu-category-box">
+                    <div class="category-heading-container">
+                        <div class="category-heading">🍽️ Food Menu</div>
+                        <input type="text" id="search-food" class="section-search" placeholder="Search food..." oninput="renderCustomerMenu()">
+                    </div>
+                    <ul id="customer-food-list" class="product-option-list">
+                        <li class="empty-text">Loading items...</li>
+                    </ul>
+                </div>
+
+                <!-- 2. Beverages & Liquor -->
+                <div class="menu-category-box">
+                    <div class="category-heading-container">
+                        <div class="category-heading">🍷 Beverages & Liquor</div>
+                        <input type="text" id="search-liquor" class="section-search" placeholder="Search drinks..." oninput="renderCustomerMenu()">
+                    </div>
+                    <ul id="customer-liquor-list" class="product-option-list">
+                        <li class="empty-text">Loading items...</li>
+                    </ul>
+                </div>
+
+                <!-- 3. Soft Drinks -->
+                <div class="menu-category-box">
+                    <div class="category-heading-container">
+                        <div class="category-heading">🥤 Soft Drinks</div>
+                        <input type="text" id="search-drink" class="section-search" placeholder="Search soft drinks..." oninput="renderCustomerMenu()">
+                    </div>
+                    <ul id="customer-drink-list" class="product-option-list">
+                        <li class="empty-text">Loading items...</li>
+                    </ul>
+                </div>
+
+                <!-- 4. Rooms Available -->
+                <div class="menu-category-box">
+                    <div class="category-heading-container">
+                        <div class="category-heading">🏨 Rooms Available</div>
+                        <input type="text" id="search-room" class="section-search" placeholder="Search rooms..." oninput="renderCustomerMenu()">
+                    </div>
+                    <ul id="customer-room-list" class="room-grid">
+                        <li class="empty-text">Loading rooms...</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Cart & Order Submission -->
+        <div class="card">
+            <div class="card-title">🛒 Your Order Cart</div>
+            <div class="card-subtitle">Review selected items before sending</div>
+            
+            <ul id="cart-list" class="cart-summary-list">
+                <li class="empty-text">Your cart is empty. Check items on the menu.</li>
+            </ul>
+
+            <div class="cart-total-row">
+                <span>Total Amount:</span>
+                <span id="cart-total">KSh 0</span>
+            </div>
+
+            <button class="btn-order" onclick="submitOrder()">📤 Send Order to Reception</button>
+        </div>
+    </div>
+
+    <footer>
+        Better Service . Better Pay . Elegance
+    </footer>
+
+    <script>
+        let products = [];
+        let rooms = [];
+        let cartSelections = {};
+        let renderCustomerMenu;
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const foodUl = document.getElementById("customer-food-list");
+            const liquorUl = document.getElementById("customer-liquor-list");
+            const drinkUl = document.getElementById("customer-drink-list");
+            const roomUl = document.getElementById("customer-room-list");
+            const cartList = document.getElementById("cart-list");
+            const cartTotalEl = document.getElementById("cart-total");
+
+            // Fetch data from the server API endpoints
+            async function fetchData() {
+                try {
+                    const [prodRes, roomRes] = await Promise.all([
+                        fetch('/api/products'),
+                        fetch('/api/rooms')
+                    ]);
+                    products = await prodRes.json();
+                    rooms = await roomRes.json();
+                    renderCustomerMenu();
+                } catch (err) {
+                    console.error("Error fetching data:", err);
+                }
+            }
+
+            renderCustomerMenu = function() {
+                const availableProducts = products.filter(p => p.quantity > 0);
+
+                const drinkKeywords = ['soda', 'cola', 'juice', 'water', 'fanta', 'sprite', 'coke', 'energy', 'malt', 'tonic'];
+                const foodKeywords = ['rice', 'beef', 'chicken', 'ugali', 'fries', 'chips', 'fish', 'pork', 'soup', 'stew', 'burger', 'pizza', 'sandwich', 'eggs', 'chapati', 'nyama', 'pilau', 'spaghetti', 'pancake', 'sausage'];
+
+                const foods = availableProducts.filter(p => {
+                    const cat = (p.category || "").toLowerCase();
+                    if (cat.includes('food')) return true;
+                    if (cat.includes('soft') || cat.includes('drink') || cat.includes('liquor') || cat.includes('beverage')) return false;
+                    const n = p.product.toLowerCase();
+                    return foodKeywords.some(keyword => n.includes(keyword));
+                });
+
+                const drinks = availableProducts.filter(p => {
+                    const cat = (p.category || "").toLowerCase();
+                    if (cat.includes('soft') || cat.includes('drink')) return true;
+                    if (cat.includes('food') || cat.includes('liquor') || cat.includes('beverage')) return false;
+                    const n = p.product.toLowerCase();
+                    return drinkKeywords.some(keyword => n.includes(keyword));
+                });
+
+                const liquors = availableProducts.filter(p => {
+                    const cat = (p.category || "").toLowerCase();
+                    if (cat.includes('liquor') || cat.includes('beverage')) return true;
+                    const isFood = foods.includes(p);
+                    const isDrink = drinks.includes(p);
+                    return !isFood && !isDrink;
+                });
+
+                const foodSearch = document.getElementById("search-food").value.toLowerCase();
+                const liquorSearch = document.getElementById("search-liquor").value.toLowerCase();
+                const drinkSearch = document.getElementById("search-drink").value.toLowerCase();
+                const roomSearch = document.getElementById("search-room").value.toLowerCase();
+
+                const filteredFoods = foods.filter(p => p.product.toLowerCase().includes(foodSearch));
+                const filteredLiquors = liquors.filter(p => p.product.toLowerCase().includes(liquorSearch));
+                const filteredDrinks = drinks.filter(p => p.product.toLowerCase().includes(drinkSearch));
+                const filteredRooms = rooms.filter(r => `room ${r.number} ${r.name} ${r.status}`.toLowerCase().includes(roomSearch));
+
+                renderCategory(foodUl, filteredFoods);
+                renderCategory(liquorUl, filteredLiquors);
+                renderCategory(drinkUl, filteredDrinks);
+                renderRooms(filteredRooms);
+            }
+
+            function renderCategory(container, items) {
+                container.innerHTML = "";
+                if (items.length === 0) {
+                    container.innerHTML = `<li class="empty-text">No stock available</li>`;
+                    return;
+                }
+
+                items.forEach(item => {
+                    const cartKey = `p_${item.id}`;
+                    const isSelected = cartSelections[cartKey] !== undefined;
+                    const qty = isSelected ? cartSelections[cartKey].qty : 1;
+
+                    const li = document.createElement("li");
+                    li.className = "product-option-item";
+                    li.innerHTML = `
+                        <div class="product-left">
+                            <input type="checkbox" id="chk-${item.id}" ${isSelected ? 'checked' : ''} onclick="toggleItemSelection(${item.id}, '${item.product.replace(/'/g, "\\'")}', ${item.selling}, 'product')">
+                            <label for="chk-${item.id}" style="margin:0; font-size:13px; text-transform:none; font-weight:600; cursor:pointer;">${item.product}</label>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <span style="font-size:12px; color:#059669; font-weight:700;">KSh ${Number(item.selling).toLocaleString()}</span>
+                            <div class="qty-controls">
+                                <button class="qty-btn" onclick="updateQty(${item.id}, -1, 'product')">-</button>
+                                <span style="font-size:12px; font-weight:600; width:16px; text-align:center;" id="qty-val-${item.id}">${qty}</span>
+                                <button class="qty-btn" onclick="updateQty(${item.id}, 1, 'product')">+</button>
+                            </div>
+                        </div>
+                    `;
+                    container.appendChild(li);
+                });
+            }
+
+            function renderRooms(roomsToRender) {
+                roomUl.innerHTML = "";
+                if (roomsToRender.length === 0) {
+                    roomUl.innerHTML = `<li class="empty-text">No rooms listed</li>`;
+                    return;
+                }
+
+                roomsToRender.forEach(room => {
+                    const isAvailable = room.status === "Available";
+                    const cartKey = `r_${room.number}`;
+                    const isSelected = cartSelections[cartKey] !== undefined;
+                    const roomPrice = room.price || 2500;
+
+                    const li = document.createElement("li");
+                    li.className = "room-badge-item";
+                    
+                    if (isAvailable) {
+                        li.innerHTML = `
+                            <div class="product-left">
+                                <input type="checkbox" id="chk-room-${room.number}" ${isSelected ? 'checked' : ''} onclick="toggleItemSelection('${room.number}', 'Room ${room.number} (${room.name})', ${roomPrice}, 'room')">
+                                <label for="chk-room-${room.number}" style="margin:0; font-size:13px; font-weight:600; cursor:pointer;">Room ${room.number} (${room.name})</label>
+                            </div>
+                            <div style="display:flex; align-items:center; gap:8px;">
+                                <span style="font-size:12px; color:#059669; font-weight:700;">KSh ${Number(roomPrice).toLocaleString()}</span>
+                                <span class="status-dot dot-available">${room.status}</span>
+                            </div>
+                        `;
+                    } else {
+                        li.innerHTML = `
+                            <span><strong>Room ${room.number}</strong> (${room.name})</span>
+                            <span class="status-dot dot-occupied">${room.status}</span>
+                        `;
+                    }
+                    roomUl.appendChild(li);
+                });
+            }
+
+            window.toggleItemSelection = function(id, itemName, price, type) {
+                const cartKey = type === 'product' ? `p_${id}` : `r_${id}`;
+                const checkbox = document.getElementById(type === 'product' ? `chk-${id}` : `chk-room-${id}`);
+                const qtySpan = document.getElementById(type === 'product' ? `qty-val-${id}` : `qty-val-room-${id}`);
+                const currentQty = qtySpan ? parseInt(qtySpan.textContent) : 1;
+
+                if (checkbox.checked) {
+                    cartSelections[cartKey] = { product: itemName, price: price, qty: currentQty };
+                } else {
+                    delete cartSelections[cartKey];
+                }
+                updateCartDisplay();
+            }
+
+            window.updateQty = function(id, change, type) {
+                const cartKey = type === 'product' ? `p_${id}` : `r_${id}`;
+                const qtySpan = document.getElementById(type === 'product' ? `qty-val-${id}` : `qty-val-room-${id}`);
+                const checkbox = document.getElementById(type === 'product' ? `chk-${id}` : `chk-room-${id}`);
+                if (!qtySpan) return;
+
+                let currentQty = parseInt(qtySpan.textContent) + change;
+                if (currentQty < 1) currentQty = 1;
+                qtySpan.textContent = currentQty;
+
+                if (cartSelections[cartKey]) {
+                    cartSelections[cartKey].qty = currentQty;
+                    updateCartDisplay();
+                } else if (checkbox) {
+                    checkbox.checked = true;
+                    if (type === 'product') {
+                        const found = products.find(p => p.id === id);
+                        if (found) {
+                            cartSelections[cartKey] = { product: found.product, price: found.selling, qty: currentQty };
+                            updateCartDisplay();
+                        }
+                    }
+                }
+            }
+
+            function updateCartDisplay() {
+                cartList.innerHTML = "";
+                let total = 0;
+                const keys = Object.keys(cartSelections);
+
+                if (keys.length === 0) {
+                    cartList.innerHTML = `<li class="empty-text">Your cart is empty. Check items on the menu.</li>`;
+                    cartTotalEl.textContent = "KSh 0";
+                    return;
+                }
+
+                keys.forEach(key => {
+                    const item = cartSelections[key];
+                    const subtotal = item.price * item.qty;
+                    total += subtotal;
+
+                    const li = document.createElement("li");
+                    li.className = "cart-item";
+                    li.innerHTML = `
+                        <span>${item.product} (x${item.qty})</span>
+                        <strong>KSh ${subtotal.toLocaleString()}</strong>
+                    `;
+                    cartList.appendChild(li);
+                });
+
+                cartTotalEl.textContent = `KSh ${total.toLocaleString()}`;
+            }
+
+      window.submitOrder = async function() {
+    const keys = Object.keys(cartSelections);
+    if (keys.length === 0) {
+        alert("Please select at least one product or room before submitting your order.");
+        return;
+    }
+
+    let itemsArray = keys.map(key => ({
+        product: cartSelections[key].product,
+        price: cartSelections[key].price,
+        qty: cartSelections[key].qty
+    }));
+
+    let totalAmount = itemsArray.reduce((sum, i) => sum + (i.price * i.qty), 0);
+
+    // Include the table number here!
+    let newOrder = {
+        table_number: tableNumber, // Pass the scanned table number (e.g., "Table 3")
+        items: JSON.stringify(itemsArray),
+        total: totalAmount,
+        status: "Pending"
+    };
+
+    try {
+        const response = await fetch('/api/orders', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(newOrder)
+        });
+
+        if (response.ok) {
+            cartSelections = {};
+            updateCartDisplay();
+            renderCustomerMenu();
+            alert(`Order received successfully for ${tableNumber}! The receptionist has been notified.`);
+        } else {
+            alert("Failed to submit order. Please try again.");
+        }
+    } catch (err) {
+        console.error("Error submitting order:", err);
+        alert("Network error while submitting order.");
+    }
+}
+ 
+
+    // Check if the page was opened via QR scan
+    const urlParams = new URLSearchParams(window.location.search);
+    const isScanned = urlParams.get('scanned');
+    const tableNumber = urlParams.get('table');
+
+    if (isScanned === 'true') {
+        alert("Welcome to Getembe Restaurant!");
+        
+        // Display a green tick banner at the top of the customer page
+        const banner = document.createElement('div');
+        banner.style.cssText = "background: #d1fae5; color: #065f46; padding: 12px; text-align: center; font-weight: bold; font-size: 14px; border-bottom: 1px solid #a7f3d0; z-index: 1000; position: relative;";
+        banner.innerHTML = `✅ Successfully connected to Table ${tableNumber} - Welcome to Getembe Restaurant!`;
+        document.body.prepend(banner);
+    }
+
+            // Initial fetch
+            fetchData();
+        });
+    </script>
+</body>
+</html>

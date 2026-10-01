@@ -149,13 +149,36 @@ app.delete('/api/orders/:id', (req, res) => {
 });
 
 // Route mapping for pages
+// Route mapping for pages
 app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+app.get('/index.html', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 app.get('/overview', (req, res) => {
     res.sendFile(path.join(__dirname, 'overview.html'));
 });
+
+app.get('/overview.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'overview.html'));
+});
+
+app.get('/receptionist.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'receptionist.html'));
+});
+
+app.get('/administrator.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'administrator.html'));
+});
+
+app.get('/customer.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'customer.html'));
+});
+
+
 
 // Local development server runner
 if (process.env.NODE_ENV !== 'production') {

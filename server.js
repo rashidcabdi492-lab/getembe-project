@@ -168,11 +168,11 @@ app.delete('/api/orders/:id', (req, res) => {
 
 // Route mapping for overview.html
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'overview.html'));
+    res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 app.get('/overview', (req, res) => {
-    res.sendFile(path.join(__dirname, 'overview.html'));
+    res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 // Start Server (Keep your existing app.listen block)

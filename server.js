@@ -178,7 +178,9 @@ app.get('/customer.html', (req, res) => {
     res.sendFile(path.join(__dirname, 'customer.html'));
 });
 
-
+app.get('/qrgetembe.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'qrgetembe.html'));
+});
 
 // Local development server runner
 if (process.env.NODE_ENV !== 'production') {
